@@ -23,3 +23,9 @@ function createMainPathListeners(baseUrl) {
     Api.callActualApi(baseUrl, mainPath, Api.mainPathRender)
   })
 }
+
+function createSubLinksListeners(url) {
+  $(".sub-link").click(function(e){
+    Api.callSubLinks(url, ApiView.renderSubLinks)
+  })
+}
