@@ -135,8 +135,7 @@ class Api {
                 </form>
               </div>`
     } else {
-      html += `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a></p>`
-      html += `<p><a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
+      html += `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a>   <a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
     }
 
     html += "<ul>"
