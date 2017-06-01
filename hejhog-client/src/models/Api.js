@@ -72,7 +72,9 @@ class Api {
         var url = el["url"]
         html += `<li><a href="#" class="sub-link" data-url="${url}">${name}</a></li>`
       } else {
-        Api.renderObject(el)
+        for(var sKey in el) {
+          html += Api.checkType(el[sKey], undefined, sKey)
+        }
       }
 
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length === 1)) {
@@ -85,6 +87,12 @@ class Api {
 
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length === 0)) {
       // render nothing
+    } else if (Object.prototype.toString.call(el) === '[object Array]') {
+      el.forEach(function(el2) {
+        for(var sKey in el2) {
+          html += Api.checkType(el2)
+        }
+      })
     } else {
       if (key != undefined){
         html += `<li>${key}: ${el}</li>`
