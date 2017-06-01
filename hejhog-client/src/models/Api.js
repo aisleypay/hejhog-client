@@ -40,7 +40,8 @@ class Api {
       dataType: 'json',
       success: function(response) {
         callbackFn(response, `${baseUrl}${mainPath}`)
-      }
+      },
+      error: Api.callSubLinks(baseUrl, Api.mainPathRender)
     })
   }
 
@@ -108,6 +109,7 @@ class Api {
 
   // determine what kind of JSON object is the return value of whatev mainpath was clicked from the nav bar
   static mainPathRender(response, currUrl) {
+    // debugger
     if (response.constructor === Array) {
       Api.renderArray(response, undefined, undefined, currUrl)
     } else if (response.constructor === Object) {
@@ -151,7 +153,7 @@ class Api {
   //render to  #existing-api-links div the result of ajax mainpath call if it is an object {}
   static renderObject(response) {
     $("#existing-api-links").html('<ul id="individual-resource"></ul>')
-    var individualResoure = $("#individual-resource")
+    var individualResource = $("#individual-resource")
 
     for (var key in response) {
       var currVal = response[key]
@@ -160,11 +162,11 @@ class Api {
       if ((Object.prototype.toString.call(currVal) === '[object Array]')) {
 
         if (currVal.length === 0) {
-          individualResoure.append(`<li>${key}: </li>`)
+          individualResource.append(`<li>${key}: </li>`)
 
           // if currVal first element is an object {}
         } else if (Object.prototype.toString.call(currVal[0]) === '[object Object]') {
-          individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
+          individualResource.append(`<li>${key}: </li><ul id=${key}>`)
 
           currVal.forEach(function(el) {
             var add
@@ -174,10 +176,10 @@ class Api {
             }
           })
 
-          individualResoure.append(`</ul>`)
+          individualResource.append(`</ul>`)
 
         } else if (currVal[0].startsWith("https://")) {
-          individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
+          individualResource.append(`<li>${key}: </li><ul id=${key}>`)
           var promiseArr = []
 
           currVal.forEach(function(el) {
@@ -189,9 +191,9 @@ class Api {
             Api.handleData(promise, key)
           })
 
-          individualResoure.append(`</ul>`)
+          individualResource.append(`</ul>`)
         } else {
-          individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
+          individualResource.append(`<li>${key}: </li><ul id=${key}>`)
           currVal.forEach(function(el) {
 
             if ((el.startsWith("https://")) || (el.startsWith("http://"))) {
@@ -210,8 +212,10 @@ class Api {
         var promise = Api.callName(currVal)
         Api.handleData(promise, key)
 
+      } else if (Object.prototype.toString.call(currVal) === '[object Object]') {
+        individualResource.append(Api.checkType(currVal))
       } else {
-        individualResoure.append(`<li>${key}: ${currVal}</li>`)
+        individualResource.append(`<li>${key}: ${currVal}</li>`)
       }
     }
   }
@@ -229,8 +233,9 @@ class Api {
     $.ajax({
       type: 'GET',
       url: `${target_url}`,
-      contentType: 'application/json',
+      contentType: "application/json",
       dataType: 'json',
+      // headers: { "access-control-allow-origin": "*"},
       success: function(response) {
         callbackFn(response)
       }
@@ -249,7 +254,6 @@ class Api {
       }
     })
   }
-
 
   // ajax call that returns promise object
   static callName(target_url) {

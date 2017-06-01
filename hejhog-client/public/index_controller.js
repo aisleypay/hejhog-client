@@ -21,6 +21,7 @@ function createApiListeners() {
 $("#api-main-paths").on("click", ".main-path", function(event) {
   var mainPath = this.id
   var url = this.dataset.url
+  // debugger
   Api.callApiMainPath(url, mainPath, Api.mainPathRender)
 })
 
