@@ -6,10 +6,7 @@
     <link rel="stylesheet" href="api.scss">
   </head>
   <body>
-    <div class="jumbotron">
-      <div class="container">
-      </div>
-    </div>
+    <div class="jumbotron"></div>
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -41,17 +38,19 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
-    <div id="main-body">
-      <div id="existing-api-links">
-      </div>
-      <div id="add-api">
-        <form id='form'>
-            New API Name: <input type="text" id='site-name' placeholder="My API">
-          API Base URL: <input type="text" id='new-base-url' placeholder="https://">
-          <input type="submit" id='submit'>
+
+    <div id="main-body" class="container">
+      <div id="add-api" >
+        <form id="base_url">
+          <div class="form-group">
+            New API Name: <input type="text" id='site-name' placeholder="My API"> API Base URL: <input type="text" id='new-base-url' placeholder="https://"> <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+          </div>
+
         </form>
         <div id="check-boxes">
         </div>
+      </div>
+      <div id="existing-api-links">
       </div>
     </div>
     <script type="text/javascript" src="/src/models/Api.js"></script>

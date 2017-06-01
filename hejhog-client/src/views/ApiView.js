@@ -16,7 +16,6 @@ class ApiView {
 
 // build nav bar with choosen API's main_paths
   static buildNavBar(response) {
-    // debugger
     let navBarPaths
 
     if (response.main_paths.length != 0) {
@@ -29,7 +28,6 @@ class ApiView {
         html += `<li><a href='#' id=${path.main_branch} class='main-path' data-url="${response.base_url}">${cap_header}</li>`
       })
     } else {
-
       Api.callSubLinks(response.base_url, Api.mainPathRender)
     }
 

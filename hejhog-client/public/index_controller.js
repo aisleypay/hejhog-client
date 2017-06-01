@@ -13,6 +13,8 @@ function getAPI() {
 function createApiListeners() {
   $(".api-base-link").click(function(e) {
     var baseId = this.id
+    // $("#add-api").html("")
+    // $("#existing-api-links").html("")
     Api.individualApiCall(ApiView.buildNavBar, baseId)
   })
 }
@@ -21,6 +23,7 @@ function createApiListeners() {
 $("#api-main-paths").on("click", ".main-path", function(event) {
   var mainPath = this.id
   var url = this.dataset.url
+  // debugger
   Api.callApiMainPath(url, mainPath, Api.mainPathRender)
 })
 
