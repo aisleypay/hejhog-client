@@ -311,6 +311,18 @@ class Api {
     })
   }
 
+  static getMainPaths(paths, lastId){
+        paths.forEach((path) => {
+          var params = {
+            main_path: {
+              main_branch: path + '/',
+              base_url_id: lastId
+            }
+          }
+          Api.addMainPathsToNewlyAddedApi(params)
+        })
+      }
+
   static addMainPathsToNewlyAddedApi(params) {
     $.ajax({
       type: 'POST',
@@ -325,15 +337,4 @@ class Api {
     ApiView.clearCheckBoxForm()
   }
 
-  static getMainPaths(paths, lastId) {
-    paths.forEach((path) => {
-      var params = {
-        main_path: {
-          main_branch: path + '/',
-          base_url_id: lastId
-        }
-      }
-      Api.addMainPathsToNewlyAddedApi(params)
-    })
-  }
 }
