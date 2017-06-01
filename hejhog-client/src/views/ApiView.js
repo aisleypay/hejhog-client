@@ -1,5 +1,6 @@
 class ApiView {
 
+// rendering the site names onto the homepage of the APIs saved in our database
   static render(response) {
     var html = "<div class=\"results\">"
 
@@ -13,10 +14,7 @@ class ApiView {
     createApiListeners()
   }
 
-  static individualApiRender(response) {
-    ApiView.buildNavBar(response)
-  }
-
+// build nav bar with choosen API's main_paths
   static buildNavBar(response) {
     let navBarPaths = response.main_paths
     var html = ""
