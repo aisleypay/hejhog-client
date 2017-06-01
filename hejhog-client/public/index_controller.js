@@ -13,8 +13,6 @@ function getAPI() {
 function createApiListeners() {
   $(".api-base-link").click(function(e) {
     var baseId = this.id
-    // $("#add-api").html("")
-    // $("#existing-api-links").html("")
     Api.individualApiCall(ApiView.buildNavBar, baseId)
   })
 }
@@ -23,7 +21,6 @@ function createApiListeners() {
 $("#api-main-paths").on("click", ".main-path", function(event) {
   var mainPath = this.id
   var url = this.dataset.url
-  // debugger
   Api.callApiMainPath(url, mainPath, Api.mainPathRender)
 })
 
@@ -53,8 +50,19 @@ function returnHome(){
 }
 
 function postNewApi(){
-  $("#submit").click(function(event){
+  $("#form").submit(function(event){
     event.preventDefault()
     Api.addApi()
   })
 }
+
+function checkBoxSubmit(lastId){
+  $("#check-box-form").submit(function(event){
+    event.preventDefault()
+      var selected = [];
+      $.each($("input[type='checkbox']:checked"), function(){
+        selected.push($(this).val());
+      });
+      Api.getMainPaths(selected, lastId)
+    })
+  }

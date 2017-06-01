@@ -38,5 +38,30 @@ class ApiView {
     $("#api-main-paths").html("")
   }
 
+  static clearForm(){
+    $("#form")[0].reset()
+  }
+
+  static renderCheckBoxForm(paths){
+    var html = '<form id="check-box-form">'
+    paths.forEach((path) => {
+      html += ApiView.getCheckBox(path)
+    })
+    html += '<br><input type="submit" id="check-box-submit">'
+    html += '</form>'
+    $("#check-boxes").html(html)
+    return html
+  }
+
+  static getCheckBox(path){
+    // create pre-checked boxes corresponding to main_paths values
+    var html = path + ": <input id='main_path_checkbox' type='checkbox' value='"+`${path}`+"'checked><br>"
+    $("#check-box-form").append(html)
+    return html
+  }
+
+  static clearCheckBoxForm(){
+    $("#check-boxes").html("")
+  }
 
 }
