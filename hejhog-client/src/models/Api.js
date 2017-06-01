@@ -47,22 +47,22 @@ class Api {
 
   // builds and return html based on the passed in parameters
   static checkType(el, name, key) {
-    var name = name || el.name
+    var name = name || el.name || el.title
     var html = ""
 
     // if el is a string and a url
     if (typeof el === 'string' && ((el.startsWith("https://")) || (el.startsWith("http://")))) {
       if (key != undefined) {
-        html += `<li><a href="#" class="sub-link" data-url="${el}">${key}: ${name}</a></li>`
+        html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${el}">${key}: ${name}</a></li>`
       } else {
-        html += `<li><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
+        html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
       }
 
       // if el is an object {} and it has more than 1 K-V pair
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length > 1)) {
       if (el["url"] != undefined) {
         var url = el["url"]
-        html += `<li><a href="#" class="sub-link" data-url="${url}">${name}</a></li>`
+        html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${url}">${name}</a></li>`
       } else {
         // if no url render our object
         for (var sKey in el) {
@@ -74,7 +74,7 @@ class Api {
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length === 1)) {
 
       if (el["url"] != undefined) {
-        html += `<li><a href="#" class="sub-link" data-url="${el["url"]}">${name}</a></li>`
+        html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${el["url"]}">${name}</a></li>`
       } else {
         html += `<li>${Object.keys(el).join()}: ${Object.values(el).join()}</li>`
       }
@@ -87,20 +87,20 @@ class Api {
 
       // if array element is an object
       el.forEach(function(el2) {
-        html += "<ul>"
+        html += '<div class="list-group">'
         for (var sKey in el2) {
           html += `${sKey}`
           html += Api.checkType(el2[sKey], undefined, sKey)
         }
-        html += "</ul>"
+        html += "</div>"
       })
 
       // id el is a string that is not a url
     } else {
       if (key != undefined) {
-        html += `<li>${key}: ${el}</li>`
+        html += `<li class="list-group-item">${key}: ${el}</li>`
       } else {
-        html += `<li>${el}</li>`
+        html += `<li class="list-group-item">${el}</li>`
       }
     }
 
@@ -109,7 +109,6 @@ class Api {
 
   // determine what kind of JSON object is the return value of whatev mainpath was clicked from the nav bar
   static mainPathRender(response, currUrl) {
-    // debugger
     if (response.constructor === Array) {
       Api.renderArray(response, undefined, undefined, currUrl)
     } else if (response.constructor === Object) {
@@ -124,34 +123,33 @@ class Api {
   }
 
   //render to  #existing-api-links div the result of ajax mainpath call
-
   static renderArray(response, nextLink, backLink, currUrl) {
     var html = ""
     if (((nextLink === undefined) || (nextLink === null)) && ((backLink === undefined) || (backLink === null))) {
-      html += `<div>
+      html += `<div class="form-group">
                 <form id="search" data-url="${currUrl}">
                   Input ID of object you would like to search: <input type="text" id="search-id" placeholder="ID">
-                  <input type="submit">
+                  <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
               </div>`
     } else {
       html += `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a>   <a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
     }
 
-    html += "<ul>"
+    html += '<div class="list-group">'
 
     // iterate through each el in the response response
     response.forEach((el) => {
       html += Api.checkType(el, name)
     })
 
-    html += "</ul>"
+    html += "</div>"
     $("#existing-api-links").html(html)
   }
 
   //render to  #existing-api-links div the result of ajax mainpath call if it is an object {}
   static renderObject(response) {
-    $("#existing-api-links").html('<ul id="individual-resource"></ul>')
+    $("#existing-api-links").html('<div id="individual-resource" class="list-group"></div>')
     var individualResource = $("#individual-resource")
 
     for (var key in response) {
@@ -161,11 +159,11 @@ class Api {
       if ((Object.prototype.toString.call(currVal) === '[object Array]')) {
 
         if (currVal.length === 0) {
-          individualResource.append(`<li>${key}: </li>`)
+          individualResource.append(`<li class="list-group-item">${key}: </li>`)
 
           // if currVal first element is an object {}
         } else if (Object.prototype.toString.call(currVal[0]) === '[object Object]') {
-          individualResource.append(`<li>${key}: </li><ul id=${key}>`)
+          individualResource.append(`<li class="list-group-item">${key}: </li><div id=${key} class="list-group">`)
 
           currVal.forEach(function(el) {
             var add
@@ -175,10 +173,10 @@ class Api {
             }
           })
 
-          individualResource.append(`</ul>`)
+          individualResource.append(`</div>`)
 
         } else if (currVal[0].startsWith("https://")) {
-          individualResource.append(`<li>${key}: </li><ul id=${key}>`)
+          individualResource.append(`<li class="list-group-item">${key}: </li><div id=${key} class="list-group">`)
           var promiseArr = []
 
           currVal.forEach(function(el) {
@@ -190,20 +188,20 @@ class Api {
             Api.handleData(promise, key)
           })
 
-          individualResource.append(`</ul>`)
+          individualResource.append(`</div>`)
         } else {
-          individualResource.append(`<li>${key}: </li><ul id=${key}>`)
+          individualResource.append(`<li class="list-group-item">${key}: </li><div id=${key} class="list-group">`)
           currVal.forEach(function(el) {
 
             if ((el.startsWith("https://")) || (el.startsWith("http://"))) {
               var promise = Api.callName(el)
               Api.handleData(promise, key)
             } else {
-              $(`${key}`).append(`<li>${el}</li>`)
+              $(`${key}`).append(`<li class="list-group-item">${el}</li>`)
             }
 
           })
-          $(`${key}`).append(`</ul>`)
+          $(`${key}`).append(`</div>`)
         }
 
         // if currVal is a string url
@@ -214,7 +212,7 @@ class Api {
       } else if (Object.prototype.toString.call(currVal) === '[object Object]') {
         individualResource.append(Api.checkType(currVal))
       } else {
-        individualResource.append(`<li>${key}: ${currVal}</li>`)
+        individualResource.append(`<li class="list-group-item">${key}: ${currVal}</li>`)
       }
     }
   }
@@ -223,7 +221,7 @@ class Api {
   static handleData(promise, key) {
     promise.then(function(realData) {
       var linkText = realData["name"] || realData["title"]
-      $(`#${key}`).append(`<li><a href="#" class="sub-link" data-url="${realData["url"]}">${linkText}</a></li>`)
+      $(`#${key}`).append(`<li class="list-group-item"><a href="#" class="sub-link" data-url="${realData["url"]}">${linkText}</a></li>`)
     })
   }
 

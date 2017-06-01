@@ -13,6 +13,8 @@ function getAPI() {
 function createApiListeners() {
   $(".api-base-link").click(function(e) {
     var baseId = this.id
+    // $("#add-api").html("")
+    // $("#existing-api-links").html("")
     Api.individualApiCall(ApiView.buildNavBar, baseId)
   })
 }
