@@ -26,6 +26,8 @@ function createMainPathListeners(baseUrl) {
 
 function createSubLinksListeners() {
   $(".sub-link").click(function(e) {
+    $("#existing-api-links").html("")
+
     var url = this.dataset.url
     Api.callSubLinks(url, Api.mainPathRender)
   })

@@ -44,7 +44,7 @@ class Api {
   static addApi(values) {
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:3000/api/v1/zoos',
+      url: 'http://localhost:3000/api/v1/base_urls/',
       contentType: 'application/json',
       dataType: 'json',
       data: values,
@@ -60,6 +60,7 @@ class Api {
 
     if (typeof el === 'string' && el.startsWith("https://")) {
       html += `<li><a href="#" class="sub-link" data-url=${el}>${name}</a></li>`
+
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length > 1)) {
 
       if (el["url"] != undefined) {
@@ -95,7 +96,7 @@ class Api {
         results = response.results
         Api.renderArray(results, response.next)
       } else {
-          Api.renderObject(response)
+        Api.renderObject(response)
       }
     }
   }
@@ -116,30 +117,57 @@ class Api {
   }
 
   static renderObject(response) {
-    var html = "<ul>"
+      $("#existing-api-links").html('<ul id="individual-resource"></ul>')
 
-      for(var key in response) {
+      // var html = '<ul id="individual-resource">'
+
+      for (var key in response) {
 
         if ((Object.prototype.toString.call(response[key]) === '[object Array]')) {
+          // $("#individual-resource").append(`<li>${key}: </li><ul id=${key}></ul>`)
 
-          html += `${key}: <ul>`
+          if (response[key].length === 0) {
+            $("#individual-resource").append(`<li>${key}: </li>`)
+          }  else if (response[key][0].startsWith("https://")) {
+            // html += `<li>${key}: </li><ul id=${key}>`
+            $("#individual-resource").append(`<li>${key}: </li><ul id=${key}>`)
+            var promiseArr = []
 
-          response[key].forEach(function(el) {
-            var name = Api.getName(el)
-            console.log(name)
-            html += Api.checkType(el, name)
-          })
 
-          html += "</ul>"
+            response[key].forEach(function(el) {
+                var promise = Api.callName(el)
+                promiseArr.push(promise)
+            })
+
+            promiseArr.forEach(function(promise) {
+              Api.handleData(promise, key)
+            })
+
+            $("#individual-resource").append(`</ul>`)
+          } else {
+            $("#individual-resource").append(`<li>${key}: </li><ul id=${key}>`)
+
+            response[key].forEach(function(el){
+              $(`${key}`).append(`<li>${el}</li>`)
+            })
+              $(`${key}`).append(`</ul>`)
+          }
+        } else if (typeof response[key] === 'string' && response[key].startsWith("https://")) {
+          var promise = Api.callName(response[key])
+          Api.handleData(promise, key)
         } else {
-          html += `<li>${key}: ${response[key]}</li>`
+          $("#individual-resource").append(`<li>${key}: ${response[key]}</li>`)
         }
       }
 
-    html += "/<ul>"
+      createSubLinksListeners()
+  }
 
-    $("#main-body").html(html)
-    createSubLinksListeners()
+  static handleData(promise, key) {
+    promise.then(function(realData) {
+      $(`#${key}`).append(`<li><a href="#" class="sub-link" data-url=${realData["url"]}>${realData["name"]}</a></li>`)
+      createSubLinksListeners()
+    })
   }
 
   static callSubLinks(target_url, callbackFn) {
@@ -154,19 +182,29 @@ class Api {
     })
   }
 
+  static callName(target_url) {
+    return $.ajax({
+      type: 'GET',
+      url: `${target_url}`,
+      contentType: 'application/json',
+      dataType: 'json'
+    })
+  }
+
   static getName(response) {
     var name = ""
 
-    if (response.hasOwnProperty("name") && response["name"] !== ""){
+    if (response.hasOwnProperty("name") && response["name"] !== "") {
       name = response["name"]
     } else if (typeof response === 'string' && response.startsWith("https://")) {
-       name = Api.callSubLinks(response, Api.getName)
+      Api.callName(response).then(first => Api.getName(first)).then(sec => name = sec)
     } else {
       var arr = Object.values(response)
-      if (arr[0].startsWith("http")){
+
+      if (arr[0].startsWith("http")) {
         arr.shift()
       }
-      if (arr[0] === ""){
+      if (arr[0] === "") {
         var longest = arr.reduce(function(a, b) {
           return a.length > b.length ? a : b
         })
@@ -175,7 +213,7 @@ class Api {
         name = arr[0]
       }
     }
-    console.log("retrieving", name)
+
     return name
   }
 }
