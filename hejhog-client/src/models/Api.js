@@ -55,11 +55,17 @@ class Api {
     })
   }
 
-  static checkType(el, name) {
+  static checkType(el, name, key) {
+    // debugger
+    var name = name || el.name
     var html = ""
 
-    if (typeof el === 'string' && el.startsWith("https://")) {
-      html += `<li><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
+    if (typeof el === 'string' && ((el.startsWith("https://")) || (el.startsWith("http://")))) {
+      if (key != undefined){
+        html += `<li><a href="#" class="sub-link" data-url="${el}">${key}: ${name}</a></li>`
+      } else {
+        html += `<li><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
+      }
 
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length > 1)) {
       if (el["url"] != undefined) {
@@ -80,7 +86,11 @@ class Api {
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length === 0)) {
       // render nothing
     } else {
-      html += `<li>${el}</li>`
+      if (key != undefined){
+        html += `<li>${key}: ${el}</li>`
+      } else {
+        html += `<li>${el}</li>`
+      }
     }
 
     return html
@@ -118,20 +128,28 @@ class Api {
   static renderObject(response) {
       $("#existing-api-links").html('<ul id="individual-resource"></ul>')
 
-      // var html = '<ul id="individual-resource">'
-
       for (var key in response) {
 
         if ((Object.prototype.toString.call(response[key]) === '[object Array]')) {
-          // $("#individual-resource").append(`<li>${key}: </li><ul id=${key}></ul>`)
 
           if (response[key].length === 0) {
             $("#individual-resource").append(`<li>${key}: </li>`)
-          }  else if (response[key][0].startsWith("https://")) {
-            // html += `<li>${key}: </li><ul id=${key}>`
+
+          }  else if (Object.prototype.toString.call(response[key][0]) === '[object Object]') {
+            $("#individual-resource").append(`<li>${key}: </li><ul id=${key}>`)
+
+                response[key].forEach(function(el) {
+                  // debugger
+                  for(var subKey in el) {
+                    var add = Api.checkType(el[subKey], el.name, subKey)
+                    $(`#${key}`).append(`${add}`)
+                  }
+                })
+
+            $("#individual-resource").append(`</ul>`)
+          } else if (response[key][0].startsWith("https://")) {
             $("#individual-resource").append(`<li>${key}: </li><ul id=${key}>`)
             var promiseArr = []
-
 
             response[key].forEach(function(el) {
                 var promise = Api.callName(el)

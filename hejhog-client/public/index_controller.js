@@ -18,8 +18,6 @@ function createApiListeners() {
 function createMainPathListeners(baseUrl) {
   $(".main-path").click(function(e) {
     var mainPath = this.id
-
-    // call ajax to get specific apis information rendered
     Api.callActualApi(baseUrl, mainPath, Api.mainPathRender)
   })
 }
