@@ -1,6 +1,7 @@
 $(document).ready(function() {
   getAPI()
   returnHome()
+  postNewApi()
 })
 
 // loads from our API, APIs in database
@@ -39,5 +40,12 @@ function returnHome(){
   $("a.navbar-brand").click(function(e){
     ApiView.clearNavBar()
     getAPI()
+  })
+}
+
+function postNewApi(){
+  $("#submit").click(function(event){
+    event.preventDefault()
+    Api.addApi()
   })
 }

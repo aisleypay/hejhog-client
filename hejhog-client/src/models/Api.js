@@ -44,21 +44,6 @@ class Api {
     })
   }
 
-  static addApi(values) {
-    $.ajax({
-      type: 'POST',
-      url: 'http://localhost:3000/api/v1/base_urls/',
-      contentType: 'application/json',
-      dataType: 'json',
-      data: values,
-      success: function(response) {
-        ZooView.addZoosToDom(response)
-        Zoo.all(Zoo.refreshMap)
-      }
-    })
-  }
-
-
 // builds and return html based on the passed in parameters
   static checkType(el, name, key) {
     var name = name || el.name
@@ -251,6 +236,55 @@ class Api {
       url: `${target_url}`,
       contentType: 'application/json',
       dataType: 'json'
+    })
+  }
+
+  static addApi() {
+
+    var data = { base_url: {
+                            site_name: $("#site-name").val(),
+                            base_url: $("#new-base-url").val()
+                          }
+                }
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:3000/api/v1/base_urls',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify(data),
+      success: Api.getNewlyAddedApi(data.base_url.base_url)
+    })
+  }
+
+  static getNewlyAddedApi(url){
+    $.ajax({
+      type: 'GET',
+      url: url,
+      contentType: 'application/json',
+      dataType: 'json',
+      success: function(response){
+        console.log(response)
+        var mainPaths = Object.keys(response)
+        mainPaths.forEach( (path) => {
+          console.log(path)
+          var params = { main_path: { main_branch: path} }
+          console.log(params)
+          Api.addMainPathsToNewlyAddedApi(params)
+        })
+      }
+
+    })
+  }
+
+  static addMainPathsToNewlyAddedApi(params){
+    $.ajax ({
+      type: 'POST',
+      url: 'http://localhost:3000/api/v1/main_paths',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify(params),
+      success: getAPI()
     })
   }
 }

@@ -29,4 +29,9 @@ class ApiView {
     createMainPathListeners(response.base_url)
   }
 
+  static clearNavBar(){
+    $("#api-main-paths").html("")
+  }
+
+
 }
