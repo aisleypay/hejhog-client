@@ -59,13 +59,12 @@ class Api {
     var html = ""
 
     if (typeof el === 'string' && el.startsWith("https://")) {
-      html += `<li><a href="#" class="sub-link" data-url=${el}>${name}</a></li>`
+      html += `<li><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
 
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length > 1)) {
-
       if (el["url"] != undefined) {
         var url = el["url"]
-        html += `<li><a href="#" class="sub-link" data-url=${url}>${name}</a></li>`
+        html += `<li><a href="#" class="sub-link" data-url="${url}">${name}</a></li>`
       } else {
         Api.renderObject(el)
       }
@@ -73,7 +72,7 @@ class Api {
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length === 1)) {
 
       if (el["url"] != undefined) {
-        html += `<li><a href="#" class="sub-link" data-url=${el["url"]}>${name}</a></li>`
+        html += `<li><a href="#" class="sub-link" data-url="${el["url"]}">${name}</a></li>`
       } else {
         html += `<li>${Object.keys(el).join()}${Object.values(el).join()}</li>`
       }
@@ -94,15 +93,16 @@ class Api {
       var results
       if (response.results != undefined) {
         results = response.results
-        Api.renderArray(results, response.next)
+        Api.renderArray(results, response.next, response.previous)
       } else {
         Api.renderObject(response)
       }
     }
   }
 
-  static renderArray(array, nextLink) {
-    var html = `<p><a href=${nextLink}>Next</a></p>`
+  static renderArray(array, nextLink, backLink) {
+    var html = `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a></p>`
+    html += `<p><a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
     html += "<ul>"
 
     array.forEach((el) => {
@@ -111,7 +111,6 @@ class Api {
     })
 
     html += "</ul>"
-
     $("#existing-api-links").html(html)
     createSubLinksListeners()
   }
@@ -146,15 +145,22 @@ class Api {
             $("#individual-resource").append(`</ul>`)
           } else {
             $("#individual-resource").append(`<li>${key}: </li><ul id=${key}>`)
-
             response[key].forEach(function(el){
-              $(`${key}`).append(`<li>${el}</li>`)
+
+              if ((el.startsWith("https://")) || (el.startsWith("http://"))) {
+                var promise = Api.callName(el)
+                Api.handleData(promise, key)
+              } else {
+                $(`${key}`).append(`<li>${el}</li>`)
+              }
+
             })
               $(`${key}`).append(`</ul>`)
           }
-        } else if (typeof response[key] === 'string' && response[key].startsWith("https://")) {
+        } else if (typeof response[key] === 'string' && ((response[key].startsWith("https://")) || (response[key].startsWith("http://")))) {
           var promise = Api.callName(response[key])
           Api.handleData(promise, key)
+
         } else {
           $("#individual-resource").append(`<li>${key}: ${response[key]}</li>`)
         }
@@ -165,7 +171,8 @@ class Api {
 
   static handleData(promise, key) {
     promise.then(function(realData) {
-      $(`#${key}`).append(`<li><a href="#" class="sub-link" data-url=${realData["url"]}>${realData["name"]}</a></li>`)
+      var linkText = realData["name"] || realData["title"]
+      $(`#${key}`).append(`<li><a href="#" class="sub-link" data-url="${realData["url"]}">${linkText}</a></li>`)
       createSubLinksListeners()
     })
   }
