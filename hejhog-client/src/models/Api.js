@@ -302,7 +302,14 @@ class Api {
       dataType: 'json',
       success: function(response) {
         var mainPaths = Object.keys(response)
-        mainPaths.forEach((path) => {
+        ApiView.renderCheckBoxForm(mainPaths)
+        checkBoxSubmit(lastId)
+      }
+    })
+  }
+
+  static getMainPaths(paths, lastId){
+        paths.forEach((path) => {
           var params = {
             main_path: {
               main_branch: path + '/',
@@ -312,8 +319,6 @@ class Api {
           Api.addMainPathsToNewlyAddedApi(params)
         })
       }
-    })
-  }
 
   static addMainPathsToNewlyAddedApi(params) {
     $.ajax({
@@ -324,5 +329,8 @@ class Api {
       data: JSON.stringify(params),
       success: getAPI()
     })
+    ApiView.clearForm()
+    ApiView.clearCheckBoxForm()
   }
+
 }

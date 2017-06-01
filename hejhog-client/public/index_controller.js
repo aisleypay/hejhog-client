@@ -50,8 +50,19 @@ function returnHome(){
 }
 
 function postNewApi(){
-  $("#submit").click(function(event){
+  $("#form").submit(function(event){
     event.preventDefault()
     Api.addApi()
   })
 }
+
+function checkBoxSubmit(lastId){
+  $("#check-box-form").submit(function(event){
+    event.preventDefault()
+      var selected = [];
+      $.each($("input[type='checkbox']:checked"), function(){
+        selected.push($(this).val());
+      });
+      Api.getMainPaths(selected, lastId)
+    })
+  }
