@@ -5,7 +5,7 @@ class Api {
     this.base_url = base_url
   }
 
-// ajax call to retrieve all the API urls saved in our APIs database
+  // ajax call to retrieve all the API urls saved in our APIs database
   static all(callbackFn) {
     $.ajax({
       type: 'GET',
@@ -18,7 +18,7 @@ class Api {
     })
   }
 
-// retrieve from database the main-paths of the API clicked on the homepage
+  // retrieve from database the main-paths of the API clicked on the homepage
   static individualApiCall(callbackFn, baseId) {
     $.ajax({
       type: 'GET',
@@ -31,7 +31,7 @@ class Api {
     })
   }
 
-// ajax call to retrieve JSON of clicked nav bar mainpath
+  // ajax call to retrieve JSON of clicked nav bar mainpath
   static callApiMainPath(baseUrl, mainPath, callbackFn) {
     $.ajax({
       type: 'GET',
@@ -39,37 +39,37 @@ class Api {
       contentType: 'application/json',
       dataType: 'json',
       success: function(response) {
-        callbackFn(response)
+        callbackFn(response, `${baseUrl}${mainPath}`)
       }
     })
   }
 
-// builds and return html based on the passed in parameters
+  // builds and return html based on the passed in parameters
   static checkType(el, name, key) {
     var name = name || el.name
     var html = ""
 
     // if el is a string and a url
     if (typeof el === 'string' && ((el.startsWith("https://")) || (el.startsWith("http://")))) {
-      if (key != undefined){
+      if (key != undefined) {
         html += `<li><a href="#" class="sub-link" data-url="${el}">${key}: ${name}</a></li>`
       } else {
         html += `<li><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
       }
 
-    // if el is an object {} and it has more than 1 K-V pair
+      // if el is an object {} and it has more than 1 K-V pair
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length > 1)) {
       if (el["url"] != undefined) {
         var url = el["url"]
         html += `<li><a href="#" class="sub-link" data-url="${url}">${name}</a></li>`
       } else {
         // if no url render our object
-        for(var sKey in el) {
+        for (var sKey in el) {
           html += Api.checkType(el[sKey], undefined, sKey)
         }
       }
 
-    // if el is an object {} with a length of 1
+      // if el is an object {} with a length of 1
     } else if ((Object.prototype.toString.call(el) === '[object Object]') && (Object.keys(el).length === 1)) {
 
       if (el["url"] != undefined) {
@@ -87,7 +87,7 @@ class Api {
       // if array element is an object
       el.forEach(function(el2) {
         html += "<ul>"
-        for(var sKey in el2) {
+        for (var sKey in el2) {
           html += `${sKey}`
           html += Api.checkType(el2[sKey], undefined, sKey)
         }
@@ -96,7 +96,7 @@ class Api {
 
       // id el is a string that is not a url
     } else {
-      if (key != undefined){
+      if (key != undefined) {
         html += `<li>${key}: ${el}</li>`
       } else {
         html += `<li>${el}</li>`
@@ -106,117 +106,125 @@ class Api {
     return html
   }
 
-// determine what kind of JSON object is the return value of whatev mainpath was clicked from the nav bar
-  static mainPathRender(response) {
+  // determine what kind of JSON object is the return value of whatev mainpath was clicked from the nav bar
+  static mainPathRender(response, currUrl) {
     if (response.constructor === Array) {
-      Api.renderArray(response)
+      Api.renderArray(response, undefined, undefined, currUrl)
     } else if (response.constructor === Object) {
       var results
       if (response.results != undefined) {
         results = response.results
-        Api.renderArray(results, response.next, response.previous)
+        Api.renderArray(results, response.next, response.previous, currUrl)
       } else {
         Api.renderObject(response)
       }
     }
   }
 
-//render to  #existing-api-links div the result of ajax mainpath call
-  static renderArray(response, nextLink, backLink) {
-    var html = `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a></p>`
-    html += `<p><a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
+  //render to  #existing-api-links div the result of ajax mainpath call
+
+  static renderArray(response, nextLink, backLink, currUrl) {
+    var html = ""
+    if (((nextLink === undefined) || (nextLink === null)) && ((backLink === undefined) || (backLink === null))) {
+      html += `<div>
+                <form id="search" data-url="${currUrl}">
+                  Input ID of object you would like to search: <input type="text" id="search-id" placeholder="ID">
+                  <input type="submit">
+                </form>
+              </div>`
+    } else {
+      html += `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a></p>`
+      html += `<p><a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
+    }
+
     html += "<ul>"
 
-// iterate through each el in the response response
+    // iterate through each el in the response response
     response.forEach((el) => {
       html += Api.checkType(el, name)
     })
 
     html += "</ul>"
     $("#existing-api-links").html(html)
-    createSubLinksListeners()
   }
 
-//render to  #existing-api-links div the result of ajax mainpath call if it is an object {}
+  //render to  #existing-api-links div the result of ajax mainpath call if it is an object {}
   static renderObject(response) {
-      $("#existing-api-links").html('<ul id="individual-resource"></ul>')
-      var individualResoure = $("#individual-resource")
+    $("#existing-api-links").html('<ul id="individual-resource"></ul>')
+    var individualResoure = $("#individual-resource")
 
-      for (var key in response) {
-        var currVal = response[key]
+    for (var key in response) {
+      var currVal = response[key]
 
-        //if currVal is an Array
-        if ((Object.prototype.toString.call(currVal) === '[object Array]')) {
+      //if currVal is an Array
+      if ((Object.prototype.toString.call(currVal) === '[object Array]')) {
 
-          if (currVal.length === 0) {
-            individualResoure.append(`<li>${key}: </li>`)
+        if (currVal.length === 0) {
+          individualResoure.append(`<li>${key}: </li>`)
 
-            // if currVal first element is an object {}
-          }  else if (Object.prototype.toString.call(currVal[0]) === '[object Object]') {
-            individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
+          // if currVal first element is an object {}
+        } else if (Object.prototype.toString.call(currVal[0]) === '[object Object]') {
+          individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
 
-                currVal.forEach(function(el) {
-                  var add
-                  for(var subKey in el) {
-                    add = Api.checkType(el[subKey], el.name, subKey)
-                    $(`#${key}`).append(`${add}`)
-                  }
-                })
+          currVal.forEach(function(el) {
+            var add
+            for (var subKey in el) {
+              add = Api.checkType(el[subKey], el.name, subKey)
+              $(`#${key}`).append(`${add}`)
+            }
+          })
 
-            individualResoure.append(`</ul>`)
+          individualResoure.append(`</ul>`)
 
-          } else if (currVal[0].startsWith("https://")) {
-            individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
-            var promiseArr = []
+        } else if (currVal[0].startsWith("https://")) {
+          individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
+          var promiseArr = []
 
-            currVal.forEach(function(el) {
-                var promise = Api.callName(el)
-                promiseArr.push(promise)
-            })
+          currVal.forEach(function(el) {
+            var promise = Api.callName(el)
+            promiseArr.push(promise)
+          })
 
-            promiseArr.forEach(function(promise) {
-              Api.handleData(promise, key)
-            })
+          promiseArr.forEach(function(promise) {
+            Api.handleData(promise, key)
+          })
 
-            individualResoure.append(`</ul>`)
-          } else {
-            individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
-            currVal.forEach(function(el){
-
-              if ((el.startsWith("https://")) || (el.startsWith("http://"))) {
-                var promise = Api.callName(el)
-                Api.handleData(promise, key)
-              } else {
-                $(`${key}`).append(`<li>${el}</li>`)
-              }
-
-            })
-              $(`${key}`).append(`</ul>`)
-          }
-
-          // if currVal is a string url
-        } else if (typeof currVal === 'string' && ((currVal.startsWith("https://")) || (currVal.startsWith("http://")))) {
-          var promise = Api.callName(currVal)
-          Api.handleData(promise, key)
-
+          individualResoure.append(`</ul>`)
         } else {
-          individualResoure.append(`<li>${key}: ${currVal}</li>`)
-        }
-      }
+          individualResoure.append(`<li>${key}: </li><ul id=${key}>`)
+          currVal.forEach(function(el) {
 
-      createSubLinksListeners()
+            if ((el.startsWith("https://")) || (el.startsWith("http://"))) {
+              var promise = Api.callName(el)
+              Api.handleData(promise, key)
+            } else {
+              $(`${key}`).append(`<li>${el}</li>`)
+            }
+
+          })
+          $(`${key}`).append(`</ul>`)
+        }
+
+        // if currVal is a string url
+      } else if (typeof currVal === 'string' && ((currVal.startsWith("https://")) || (currVal.startsWith("http://")))) {
+        var promise = Api.callName(currVal)
+        Api.handleData(promise, key)
+
+      } else {
+        individualResoure.append(`<li>${key}: ${currVal}</li>`)
+      }
+    }
   }
 
-// get data within passed in promise object
+  // get data within passed in promise object
   static handleData(promise, key) {
     promise.then(function(realData) {
       var linkText = realData["name"] || realData["title"]
       $(`#${key}`).append(`<li><a href="#" class="sub-link" data-url="${realData["url"]}">${linkText}</a></li>`)
-      createSubLinksListeners()
     })
   }
 
-// ajax call to retrieve JSON for whatever target url was clicked in #existing-api-links
+  // ajax call to retrieve JSON for whatever target url was clicked in #existing-api-links
   static callSubLinks(target_url, callbackFn) {
     $.ajax({
       type: 'GET',
@@ -229,7 +237,21 @@ class Api {
     })
   }
 
- // ajax call that returns promise object
+  // call search form
+  static callSearch(target_url, callbackFn, searchId) {
+    $.ajax({
+      type: 'GET',
+      url: `${target_url}${searchId}`,
+      contentType: 'application/json',
+      dataType: 'json',
+      success: function(response) {
+        callbackFn(response)
+      }
+    })
+  }
+
+
+  // ajax call that returns promise object
   static callName(target_url) {
     return $.ajax({
       type: 'GET',
@@ -240,45 +262,61 @@ class Api {
   }
 
   static addApi() {
-
-    var data = { base_url: {
-                            site_name: $("#site-name").val(),
-                            base_url: $("#new-base-url").val()
-                          }
-                }
-
+    var data = {
+      base_url: {
+        site_name: $("#site-name").val(),
+        base_url: $("#new-base-url").val()
+      }
+    }
     $.ajax({
       type: 'POST',
       url: 'http://localhost:3000/api/v1/base_urls',
       contentType: 'application/json',
       dataType: 'json',
       data: JSON.stringify(data),
-      success: Api.getNewlyAddedApi(data.base_url.base_url)
+      // success: Api.getNewlyAddedApi(data.base_url.base_url)
+      success: Api.getNewBaseUrlId(data.base_url.base_url)
     })
   }
 
-  static getNewlyAddedApi(url){
+
+  static getNewBaseUrlId(url) {
+    $.ajax({
+      type: 'GET',
+      url: `http://localhost:3000/api/v1/base_urls/`,
+      contentType: 'application/json',
+      dataType: 'json',
+      success: function(response) {
+        var last = response.pop()
+        var lastId = last.id + 1
+        Api.getNewlyAddedApi(lastId, url)
+      }
+    })
+  }
+
+  static getNewlyAddedApi(lastId, url) {
     $.ajax({
       type: 'GET',
       url: url,
       contentType: 'application/json',
       dataType: 'json',
-      success: function(response){
-        console.log(response)
+      success: function(response) {
         var mainPaths = Object.keys(response)
-        mainPaths.forEach( (path) => {
-          console.log(path)
-          var params = { main_path: { main_branch: path} }
-          console.log(params)
+        mainPaths.forEach((path) => {
+          var params = {
+            main_path: {
+              main_branch: path + '/',
+              base_url_id: lastId
+            }
+          }
           Api.addMainPathsToNewlyAddedApi(params)
         })
       }
-
     })
   }
 
-  static addMainPathsToNewlyAddedApi(params){
-    $.ajax ({
+  static addMainPathsToNewlyAddedApi(params) {
+    $.ajax({
       type: 'POST',
       url: 'http://localhost:3000/api/v1/main_paths',
       contentType: 'application/json',
