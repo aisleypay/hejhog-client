@@ -126,10 +126,11 @@ class Api {
   static renderArray(response, nextLink, backLink, currUrl) {
     var html = ""
     if (((nextLink === undefined) || (nextLink === null)) && ((backLink === undefined) || (backLink === null))) {
-      html += `<div class="form-group">
+      html += `<div id="searchForm">
                 <form id="search" data-url="${currUrl}">
-                  Input ID of object you would like to search: <input type="text" id="search-id" placeholder="ID">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="form-group">Input ID of object you would like to search: </div>
+                <div class="form-group"><input type="text" id="search-id" placeholder="ID"></div>
+                <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
               </div>`
     } else {
@@ -163,7 +164,7 @@ class Api {
 
           // if currVal first element is an object {}
         } else if (Object.prototype.toString.call(currVal[0]) === '[object Object]') {
-          individualResource.append(`<li class="list-group-item">${key}: </li><div id=${key} class="list-group">`)
+          individualResource.append(`<div class="list-group">${key}: <div id=${key} class="list-group-item"></div>`)
 
           currVal.forEach(function(el) {
             var add
@@ -175,8 +176,9 @@ class Api {
 
           individualResource.append(`</div>`)
 
+          // if first element is a url
         } else if (currVal[0].startsWith("https://")) {
-          individualResource.append(`<li class="list-group-item">${key}: </li><div id=${key} class="list-group">`)
+          individualResource.append(`<div class="list-group">${key}: <div id=${key} class="list-group-item"></div>`)
           var promiseArr = []
 
           currVal.forEach(function(el) {
@@ -190,7 +192,7 @@ class Api {
 
           individualResource.append(`</div>`)
         } else {
-          individualResource.append(`<li class="list-group-item">${key}: </li><div id=${key} class="list-group">`)
+          individualResource.append(`<div class="list-group">${key}: <div id=${key} class="list-group-item"></div>`)
           currVal.forEach(function(el) {
 
             if ((el.startsWith("https://")) || (el.startsWith("http://"))) {
