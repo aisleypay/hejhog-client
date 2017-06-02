@@ -6,7 +6,7 @@ $(document).ready(function() {
   $("#about").click(function(e) {
     $("#existing-api-links").html("")
 
-    var html = `<div id="about-content"><h1>About</h1>
+    var html = `<div id="about-content" class="container"><h1>About</h1>
                   <p>Hejhog is about making API navigation and customization easier for users. We hope that Hejhoj will be useful for anyone who wants to easily traverse an API, customize which parts of the API they want to use, and eventually construct either other APIs, store information is a user relavent context, and download relevant information. (for now) </p>
                 <h1>Who We Are</h1>
                   <p>We are Andrea, Isaac, and Paisley! We are students at the Flatiron School for web development.</p>

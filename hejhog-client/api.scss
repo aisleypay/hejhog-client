@@ -2,7 +2,7 @@ body {
   background-image: url("big-ol-hedge-in-charcoal.png");
   background-attachment: fixed;
   background-repeat: no-repeat;
-  background-position: 98% 120%;
+  background-position: 98% 110%;
 }
 .api-base-link {
   font-size: 15px;
@@ -43,6 +43,12 @@ body {
   padding-top: 0px;
 }
 
+.navbar {
+  background-image: url("single_hog.png");
+  background-position: 90%;
+  background-repeat: no-repeat;
+}
+
 img {
   height: 85px;
   width: auto;
@@ -57,7 +63,7 @@ img {
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  position: relative;
+  position: fixed;
 }
 
 #about-content {
