@@ -2,6 +2,22 @@ $(document).ready(function() {
   getAPI()
   returnHome()
   postNewApi()
+
+  $("#about").click(function(e) {
+    $("#existing-api-links").html("")
+
+    var html = `<div id="about-content"><h1>About</h1>
+                  <p>Hejhog is about making API navigation and customization easier for users. We hope that Hejhoj will be useful for anyone who wants to easily traverse an API, customize which parts of the API they want to use, and eventually construct either other APIs, store information is a user relavent context, and download relevant information. (for now) </p>
+                <h1>Who We Are</h1>
+                  <p>We are Andrea, Isaac, and Paisley! We are students at the Flatiron School for web development.</p>
+                <h1>What is this Site?</h1>
+                  <p>&nbsp;Currently, Hejhog has the ability to take in any API without authorization conditions and render out a readable user friendly version of that API. Additionally, upon submission, the user can customize to an extent which parts of the API are most important to them.</p>
+                <h1>Future Goals</h1>
+                  <p>We would like to make Hejhog a SquareSpace of sorts for APIs. The next immediate goal for development is make Hejhog capable of taking in APIs that require authorization.</p></div>`
+    $("#existing-api-links").html(html)
+
+
+  })
 })
 
 // loads from our API, APIs in database

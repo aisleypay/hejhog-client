@@ -51,9 +51,13 @@ class Api {
     var html = ""
 
     // if el is a string and a url
-    if (typeof el === 'string' && ((el.startsWith("https://")) || (el.startsWith("http://")))) {
-      if (key != undefined) {
-        html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${el}">${key}: ${name}</a></li>`
+    if (key === "image_url") {
+      html += (`<li class="list-group-item">${key}: <a href="${el}"><img src="${el}"></a> </li>`)
+
+    // if el is a string and a url
+      } else if (typeof el === 'string' && ((el.startsWith("https://")) || (el.startsWith("http://")))) {
+        if (key != undefined) {
+          html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${el}">${key}: ${name}</a></li>`
       } else {
         html += `<li class="list-group-item"><a href="#" class="sub-link" data-url="${el}">${name}</a></li>`
       }
@@ -87,7 +91,7 @@ class Api {
 
       // if array element is an object
       el.forEach(function(el2) {
-        html += '<div class="list-group">'
+        html += `<div>`
         for (var sKey in el2) {
           html += `${sKey}`
           html += Api.checkType(el2[sKey], undefined, sKey)
@@ -153,7 +157,6 @@ class Api {
     var individualResource = $("#individual-resource")
 
     for (var key in response) {
-      // debugger
       var currVal = response[key]
 
       //if currVal is an Array
@@ -161,6 +164,10 @@ class Api {
 
         if (currVal.length === 0) {
           individualResource.append(`<li class="list-group-item">${key}: </li>`)
+
+          // if the key says says the url is an image just attach the url
+        } else if (key === "image_url") {
+          individualResource.append(`<li class="list-group-item">${key}: ${currVal}</li>`)
 
           // if currVal first element is an object {}
         } else if (Object.prototype.toString.call(currVal[0]) === '[object Object]') {
