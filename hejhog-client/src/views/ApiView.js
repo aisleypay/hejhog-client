@@ -5,13 +5,14 @@ class ApiView {
     var html = '<div class="list-group"><li class="list-group-item active">Pick An API to Explore</li>'
 
     $.each(response, function(index, api) {
-      var individual = `<li class="list-group-item"><a id=${api.id} class="api-base-link" href="#"> ${api.site_name}</a></li>`
+      var individual = `<li class="list-group-item"><a id=${api.id} class="api-base-link" href="#"> ${api.site_name}</a><a id=${api.id} class="delete" href="#">Delete</a></li>`
       html += individual
     })
 
     html += "</div>"
     $("#existing-api-links").html(html)
     createApiListeners()
+    deleteId()
   }
 
 // build nav bar with choosen API's main_paths
@@ -63,7 +64,5 @@ class ApiView {
   static clearCheckBoxForm(){
     $("#check-boxes").html("")
   }
-
-
 
 }

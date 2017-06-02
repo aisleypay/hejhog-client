@@ -344,4 +344,13 @@ class Api {
     ApiView.clearCheckBoxForm()
   }
 
+  static deleteApi(id){
+    $.ajax({
+      url: `http://localhost:3000/api/v1/base_urls/${id}`,
+      type: 'DELETE',
+      success: function(){
+        getAPI()
+      }
+    })
+  }
 }

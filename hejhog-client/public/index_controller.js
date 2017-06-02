@@ -82,3 +82,10 @@ function checkBoxSubmit(lastId){
       Api.getMainPaths(selected, lastId)
     })
   }
+
+function deleteId(){
+  $(".delete").click(function(){
+    var id = $(this).attr('id')
+    Api.deleteApi(id)
+  })
+}
