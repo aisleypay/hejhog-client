@@ -1,18 +1,9 @@
-.jumbotron {
-    margin-bottom: 0px;
-    background-image: url("http://www.nwt.org.uk/sites/default/files/imagecache/campaign_banner/hedgehog_website_banner_2.jpg");
-    background-repeat: no-repeat;
-    background-size: contain;
-    padding: 60px;
-    // font-size: 18px;
-    // font-weight: 200;
-    // line-height: 30px;
-    color: inherit;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
+body {
+  background-image: url("big-ol-hedge-in-charcoal.png");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: 98% 120%;
 }
-
 .api-base-link {
   font-size: 15px;
 }
@@ -25,6 +16,7 @@
 .list-group-item {
   font-size: 15;
   font-weight: 500;
+  opacity: .9;
 }
 
 #pagination {
@@ -45,4 +37,13 @@
 
 .form-group {
     text-align: center;
+}
+
+.navbar-brand {
+  padding-top: 0px;
+}
+
+img {
+  height: 85px;
+  width: auto;
 }
