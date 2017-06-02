@@ -1,13 +1,13 @@
 <html>
   <head>
     <title>APIs on APIs</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://bootswatch.com/paper/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <link rel="stylesheet" href="api.scss">
   </head>
   <body>
     <div class="jumbotron"></div>
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -40,17 +40,18 @@
     </nav>
 
     <div id="main-body" class="container">
-      <div id="add-api" >
-        <form id="form">
-          <div class="form-group">
-            New API Name: <input type="text" id='site-name' placeholder="My API"> API Base URL: <input type="text" id='new-base-url' placeholder="https://"> <button type="submit" id="submit" class="btn btn-primary">Submit</button>
-          </div>
+      <div>
 
-        </form>
 
-      <div id="check-boxes"></div>
-
-      <div id="existing-api-links">
+        <div id="add-api" >
+          <form id="form">
+            <div class="form-group">
+              New API Name: <input type="text" id='site-name' placeholder="My API"> API Base URL: <input type="text" id='new-base-url' placeholder="https://"> <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        <div id="check-boxes"></div>
+        </div>
+        <div id="existing-api-links"></div>
       </div>
     </div>
     <script type="text/javascript" src="/src/models/Api.js"></script>

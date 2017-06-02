@@ -2,10 +2,10 @@ class ApiView {
 
 // rendering the site names onto the homepage of the APIs saved in our database
   static render(response) {
-    var html = "<div class=\"results\">"
+    var html = '<div class="list-group"><li class="list-group-item active">Pick An API to Explore</li>'
 
     $.each(response, function(index, api) {
-      var individual = `<a id=${api.id} class="api-base-link" href="#"> ${api.site_name}</a>`
+      var individual = `<li class="list-group-item"><a id=${api.id} class="api-base-link" href="#"> ${api.site_name}</a></li>`
       html += individual
     })
 
@@ -43,7 +43,7 @@ class ApiView {
   }
 
   static renderCheckBoxForm(paths){
-    var html = '<form id="check-box-form">'
+    var html = '<h3>Choose Paths to Include in API:</h3><br><form id="check-box-form">'
     paths.forEach((path) => {
       html += ApiView.getCheckBox(path)
     })

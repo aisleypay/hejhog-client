@@ -126,15 +126,14 @@ class Api {
   static renderArray(response, nextLink, backLink, currUrl) {
     var html = ""
     if (((nextLink === undefined) || (nextLink === null)) && ((backLink === undefined) || (backLink === null))) {
-      html += `<div id="searchForm">
+      html += `<div id="searchForm" class="form-group">
                 <form id="search" data-url="${currUrl}">
-                <div class="form-group">Input ID of object you would like to search: </div>
-                <div class="form-group"><input type="text" id="search-id" placeholder="ID"></div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                  Input ID of object you would like to search: <input type="text" id="search-id" placeholder="ID">
+                  <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
               </div>`
     } else {
-      html += `<p><a href="#" class="sub-link" data-url="${backLink}">Back</a>   <a href="#" class="sub-link" data-url="${nextLink}">Next</a></p>`
+      html += `<div id="pagination"><ul class="pager"><li class="previous"><a href="#" class="sub-link" data-url="${backLink}">Back</a></li><li class="next"><a href="#" class="sub-link" data-url="${nextLink}">Next</a></li></ul></div>`
     }
 
     html += '<div class="list-group">'
@@ -154,6 +153,7 @@ class Api {
     var individualResource = $("#individual-resource")
 
     for (var key in response) {
+      // debugger
       var currVal = response[key]
 
       //if currVal is an Array
@@ -199,11 +199,11 @@ class Api {
               var promise = Api.callName(el)
               Api.handleData(promise, key)
             } else {
-              $(`${key}`).append(`<li class="list-group-item">${el}</li>`)
+              $(`#${key}`).append(`<li class="list-group-item">${el}</li>`)
             }
 
           })
-          $(`${key}`).append(`</div>`)
+          $(`#${key}`).append(`</div>`)
         }
 
         // if currVal is a string url
