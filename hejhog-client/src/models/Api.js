@@ -1,8 +1,8 @@
 class Api {
 
-  constructor(site_name, base_url) {
-    this.site_name = site_name
-    this.base_url = base_url
+  constructor(siteName, baseUrl) {
+    this.siteName = siteName;
+    this.baseUrl = baseUrl;
   }
 
   // ajax call to retrieve all the API urls saved in our APIs database
@@ -12,9 +12,9 @@ class Api {
       url: 'http://localhost:3000//api/v1/base_urls',
       contentType: 'application/json',
       dataType: 'json',
-      success: function(response) {
-        callbackFn(response)
-      }
+      success: (response) => {
+        callbackFn(response);
+      },
     })
   }
 

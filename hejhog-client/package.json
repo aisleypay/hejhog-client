@@ -1,0 +1,30 @@
+{
+  "name": "linting-hejhog",
+  "version": "0.0.0",
+  "description": "Put up to standard hejhog project",
+  "main": "index_controller.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/aisleypay/hejhog-client.git"
+  },
+  "keywords": [
+    "api",
+    "hejhog"
+  ],
+  "author": "Paisley Singh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aisleypay/hejhog-client/issues"
+  },
+  "homepage": "https://github.com/aisleypay/hejhog-client#readme",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1"
+  }
+}
